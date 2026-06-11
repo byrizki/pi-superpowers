@@ -7,6 +7,6 @@ ENV PI_OFFLINE=0
 WORKDIR /workspace/pi-superpowers
 COPY . /workspace/pi-superpowers
 
-RUN npm install -g @mariozechner/pi-coding-agent
+RUN npm install -g @earendil-works/pi-coding-agent
 
 CMD ["node", "--experimental-strip-types", "tests/integration/docker/run-e2e.ts"]

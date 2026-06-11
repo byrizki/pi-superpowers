@@ -38,7 +38,7 @@ test("integration task builds and runs Docker through mise", () => {
 
 test("imported Pi core packages are peer dependencies", () => {
   assert.deepEqual(pkg.peerDependencies, {
-    "@mariozechner/pi-coding-agent": "*",
-    "@mariozechner/pi-tui": "*"
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
   });
 });
