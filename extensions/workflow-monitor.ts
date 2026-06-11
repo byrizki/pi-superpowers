@@ -110,7 +110,7 @@ function refreshWidget(ctx: ExtensionContext, state: WorkflowMonitorState): void
       formatDebugStatus(state, theme),
     ].filter((part): part is string => !!part);
 
-    return parts.length > 0 ? new WidgetText(parts.join(theme.fg("dim", "  |  "))) : undefined;
+    return new WidgetText(parts.join(theme.fg("dim", "  |  ")));
   });
 }
 

@@ -45,7 +45,7 @@ FROM node:24-bookworm
 WORKDIR /workspace/pi-superpowers
 COPY . /workspace/pi-superpowers
 
-RUN npm install -g @mariozechner/pi-coding-agent
+RUN npm install -g @earendil-works/pi-coding-agent
 
 CMD ["node", "--experimental-strip-types", "tests/integration/docker/run-e2e.ts"]
 ```

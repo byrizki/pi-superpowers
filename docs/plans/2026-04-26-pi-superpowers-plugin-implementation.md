@@ -6,7 +6,7 @@
 
 **Architecture:** `pi-superpowers` owns canonical Superpowers behavior injection, canonical Pi-adapted skills, and workflow-monitor guardrails. Task tracking is provided by `@juicesharp/rpiv-todo` via its `todo` tool. Subagent execution is provided by `pi-subagents` via its `subagent` tool.
 
-**Tech Stack:** Pi package manifest, TypeScript Pi extensions, Node 24 built-in test runner with `--experimental-strip-types`, Pi extension APIs from `@mariozechner/pi-coding-agent`, and TUI APIs from `@mariozechner/pi-tui`.
+**Tech Stack:** Pi package manifest, TypeScript Pi extensions, Node 24 built-in test runner with `--experimental-strip-types`, Pi extension APIs from `@earendil-works/pi-coding-agent`, and TUI APIs from `@earendil-works/pi-tui`.
 
 ---
 
@@ -165,8 +165,8 @@ test("test script runs root test files without fragile recursive shell globs", (
 
 test("imported Pi core packages are peer dependencies", () => {
   assert.deepEqual(pkg.peerDependencies, {
-    "@mariozechner/pi-coding-agent": "*",
-    "@mariozechner/pi-tui": "*"
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
   });
 });
 ```
@@ -212,8 +212,8 @@ Expected: FAIL with missing `package.json`.
     "skills": ["skills"]
   },
   "peerDependencies": {
-    "@mariozechner/pi-coding-agent": "*",
-    "@mariozechner/pi-tui": "*"
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
   }
 }
 ```

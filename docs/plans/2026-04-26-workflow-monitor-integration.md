@@ -6,7 +6,7 @@
 
 **Architecture:** The skills define the observable workflow contract. The monitor observes Pi events and updates modular state machines for workflow, TDD, debugging, and verification. The extension renders a compact TUI widget and provides explicit `/workflow-reset` and `/workflow-next` commands. `todo` and `pi-subagents` remain companion-package responsibilities; the monitor only observes their tool calls/results.
 
-**Tech Stack:** TypeScript Pi extension APIs, Node 24 built-in test runner with `--experimental-strip-types`, Pi TUI `Text` widgets, existing peer dependencies `@mariozechner/pi-coding-agent` and `@mariozechner/pi-tui`.
+**Tech Stack:** TypeScript Pi extension APIs, Node 24 built-in test runner with `--experimental-strip-types`, Pi TUI `Text` widgets, existing peer dependencies `@earendil-works/pi-coding-agent` and `@earendil-works/pi-tui`.
 
 ---
 

@@ -115,7 +115,7 @@ test("Docker integration assets exist", () => {
 test("Dockerfile copies repo instead of bind mounting it", () => {
   assert.match(dockerfile, /FROM node:24-bookworm/);
   assert.match(dockerfile, /COPY \. \/workspace\/pi-superpowers/);
-  assert.match(dockerfile, /npm install -g @mariozechner\/pi-coding-agent/);
+  assert.match(dockerfile, /npm install -g @earendil-works\/pi-coding-agent/);
   assert.match(dockerfile, /CMD \["node", "--experimental-strip-types", "tests\/integration\/docker\/run-e2e\.ts"\]/);
 });
 
@@ -174,7 +174,7 @@ ENV PI_OFFLINE=0
 WORKDIR /workspace/pi-superpowers
 COPY . /workspace/pi-superpowers
 
-RUN npm install -g @mariozechner/pi-coding-agent
+RUN npm install -g @earendil-works/pi-coding-agent
 
 CMD ["node", "--experimental-strip-types", "tests/integration/docker/run-e2e.ts"]
 ```
@@ -326,7 +326,7 @@ test("Docker integration assets are configured correctly", () => {
   assert.equal(existsSync(new URL("./docker/run-e2e.ts", import.meta.url)), true);
   assert.match(dockerfile, /FROM node:24-bookworm/);
   assert.match(dockerfile, /COPY \. \/workspace\/pi-superpowers/);
-  assert.match(dockerfile, /npm install -g @mariozechner\/pi-coding-agent/);
+  assert.match(dockerfile, /npm install -g @earendil-works\/pi-coding-agent/);
   assert.match(dockerfile, /CMD \["node", "--experimental-strip-types", "tests\/integration\/docker\/run-e2e\.ts"\]/);
   assert.match(dockerignore, /^node_modules$/m);
   assert.match(dockerignore, /^\.git$/m);
