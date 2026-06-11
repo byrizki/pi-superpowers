@@ -9,7 +9,7 @@ Execute plan by dispatching fresh subagent per task, with two-stage review after
 
 **Why subagents:** You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
 
-**Core principle:** Fresh subagent per task + two-stage review (spec then quality) = high quality, fast iteration
+**Core principle:** Fresh subagent per small, focused task + two-stage review (spec then quality) = high quality, fast iteration. Run as many independent subagents as safely possible when tasks do not share files or state.
 
 ## When to Use
 
@@ -45,7 +45,7 @@ digraph process {
 
     subgraph cluster_per_task {
         label="Per Task";
-        "Dispatch implementer subagent (./implementer-prompt.md)" [shape=box];
+        "Dispatch implementer subagent (small focused task)" [shape=box];
         "Implementer subagent asks questions?" [shape=diamond];
         "Answer questions, provide context" [shape=box];
         "Implementer subagent implements, tests, commits, self-reviews" [shape=box];
@@ -58,15 +58,15 @@ digraph process {
         "Mark task complete in todo" [shape=box];
     }
 
-    "Read plan, extract all tasks with full text, note context, create todo" [shape=box];
+    "Read plan, split broad items into small focused independent tasks, create all todos upfront" [shape=box];
     "More tasks remain?" [shape=diamond];
     "Dispatch final code reviewer subagent for entire implementation" [shape=box];
     "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
-    "Read plan, extract all tasks with full text, note context, create todo" -> "Dispatch implementer subagent (./implementer-prompt.md)";
-    "Dispatch implementer subagent (./implementer-prompt.md)" -> "Implementer subagent asks questions?";
+    "Read plan, split broad items into small focused independent tasks, create all todos upfront" -> "Dispatch implementer subagent (small focused task)";
+    "Dispatch implementer subagent (small focused task)" -> "Implementer subagent asks questions?";
     "Implementer subagent asks questions?" -> "Answer questions, provide context" [label="yes"];
-    "Answer questions, provide context" -> "Dispatch implementer subagent (./implementer-prompt.md)";
+    "Answer questions, provide context" -> "Dispatch implementer subagent (small focused task)";
     "Implementer subagent asks questions?" -> "Implementer subagent implements, tests, commits, self-reviews" [label="no"];
     "Implementer subagent implements, tests, commits, self-reviews" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)";
     "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" -> "Spec reviewer subagent confirms code matches spec?";
@@ -78,11 +78,24 @@ digraph process {
     "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="re-review"];
     "Code quality reviewer subagent approves?" -> "Mark task complete in todo" [label="yes"];
     "Mark task complete in todo" -> "More tasks remain?";
-    "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
+    "More tasks remain?" -> "Dispatch implementer subagent (small focused task)" [label="yes"];
     "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
     "Dispatch final code reviewer subagent for entire implementation" -> "Use superpowers:finishing-a-development-branch";
 }
 ```
+
+## Task Sizing and Parallelism
+
+Before dispatching, split plan items into small, focused tasks:
+- One file, one component, one route, one skill, or one coherent behavior per implementer
+- One narrowly scoped task per subagent
+- Full context included in the prompt; no inherited session assumptions
+- Explicit constraints about allowed files and out-of-scope work
+
+Run as many independent subagents as safely possible. Use parallel dispatch when tasks do not edit the same files, depend on each other's output, mutate the same external state, or require sequential decisions. If a task is too broad, split it before dispatch. If tasks overlap, keep them sequential or assign only one owner.
+
+Good split: `skill A docs`, `skill B docs`, `tests for skill rules`, `read-only review`.
+Bad split: `fix all skills`, `implement whole plan`, `review entire repo and patch anything`.
 
 ## Model Selection
 

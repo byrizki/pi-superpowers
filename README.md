@@ -44,6 +44,7 @@ For project-local installation, use Pi's local package install mode from your pr
 - Canonical Superpowers skills adapted for Pi.
 - Workflow monitor guardrails for phase, TDD, verification, and review reminders.
 - Bundled read-only reviewer agent templates.
+- `frontend-design` skill for high-quality UI work that avoids generic AI-looking frontend patterns.
 
 ## Tool Mapping
 

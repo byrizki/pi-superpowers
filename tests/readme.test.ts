@@ -27,6 +27,11 @@ test("README acknowledges pi-superpowers-plus workflow monitor prior art", () =>
   assert.match(readme, /TUI workflow strip/);
 });
 
+test("README documents bundled high-quality frontend design skill", () => {
+  assert.match(readme, /frontend-design/);
+  assert.match(readme, /generic AI/i);
+});
+
 test("README documents workflow monitor runtime commands and boundaries", () => {
   assert.match(readme, /\/workflow-next/);
   assert.match(readme, /\/workflow-reset/);

@@ -25,6 +25,7 @@ test("all canonical Superpowers skills are present", () => {
     "dispatching-parallel-agents",
     "executing-plans",
     "finishing-a-development-branch",
+    "frontend-design",
     "receiving-code-review",
     "requesting-code-review",
     "subagent-driven-development",
@@ -58,9 +59,13 @@ test("subagent-driven-development uses pi-subagents and keeps canonical statuses
   assert.doesNotMatch(text, /Task tool/i);
 });
 
-test("parallel agents skill uses subagent parallel mode", () => {
+test("parallel agents skill uses subagent parallel mode with small focused tasks", () => {
   const text = readSkill("dispatching-parallel-agents/SKILL.md");
   assert.match(text, /subagent\s*\(\s*\{\s*tasks:/s);
+  assert.match(text, /small, focused/i);
+  assert.match(text, /run as many independent subagents as safely possible/i);
+  assert.match(text, /one narrowly scoped task per subagent/i);
+  assert.match(text, /split.*too broad/is);
   assert.doesNotMatch(text, /Task\(/);
   assert.doesNotMatch(text, /Task tool/i);
 });
@@ -91,6 +96,8 @@ test("skills use todo tool instead of TodoWrite or plan_tracker operational inst
 test("using-superpowers requires upfront todos, not retroactive completion", () => {
   const text = readSkill("using-superpowers/SKILL.md");
   assert.match(text, /create all known todo items before starting work/i);
+  assert.match(text, /Before finishing any todo, confirm the remaining known work already has todo items/i);
+  assert.match(text, /Do not finish one todo, then create the next known todo/i);
   assert.match(text, /Never create a todo only to immediately mark it completed/i);
   assert.match(text, /Exactly one todo should be in_progress/i);
 });
@@ -122,6 +129,15 @@ test("skills expose merged workflow monitor artifact and handoff contracts", () 
   assert.match(writingPlans, /\/skill:executing-plans/);
 });
 
+test("frontend-design skill prevents generic AI-looking frontend work", () => {
+  const text = readSkill("frontend-design/SKILL.md");
+  assert.match(text, /distinctive, production-grade frontend/i);
+  assert.match(text, /BOLD aesthetic direction/i);
+  assert.match(text, /NEVER use generic AI-generated aesthetics/i);
+  assert.match(text, /Typography/i);
+  assert.match(text, /Motion/i);
+});
+
 test("execution skills expose todo and pi-subagents workflow monitor contracts", () => {
   const executing = readSkill("executing-plans/SKILL.md");
   assert.match(executing, /todo/i);
@@ -131,6 +147,9 @@ test("execution skills expose todo and pi-subagents workflow monitor contracts",
 
   const sdd = readSkill("subagent-driven-development/SKILL.md");
   assert.match(sdd, /agent:\s*"worker"/);
+  assert.match(sdd, /small, focused/i);
+  assert.match(sdd, /run as many independent subagents as safely possible/i);
+  assert.match(sdd, /parallel/i);
   assert.match(sdd, /agent:\s*"superpowers-spec-reviewer"/);
   assert.match(sdd, /agent:\s*"superpowers-code-reviewer"/);
   assert.match(sdd, /Keep these agent names exact|agent names are part of the runtime contract/i);

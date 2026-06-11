@@ -49,7 +49,11 @@ Skills use Claude Code tool names. Non-CC platforms: see `references/copilot-too
 
 For multi-step work, create all known todo items before starting work. Then mark exactly one todo as `in_progress` before acting on it, and mark it `completed` immediately after it is verified.
 
+Before finishing any todo, confirm the remaining known work already has todo items. Do not finish one todo, then create the next known todo. That create → done → create-new chain means planning happened too late.
+
 Never create a todo only to immediately mark it completed. That is fake tracking. If work is already done, summarize it instead of backfilling a completed todo.
+
+Only create new todos mid-task for genuinely newly discovered scope, blockers, or user-added requirements. Put the reason in the description.
 
 Exactly one todo should be in_progress at a time.
 

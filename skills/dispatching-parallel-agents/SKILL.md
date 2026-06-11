@@ -11,7 +11,7 @@ You delegate tasks to specialized agents with isolated context. By precisely cra
 
 When you have multiple unrelated failures (different test files, different subsystems, different bugs), investigating them sequentially wastes time. Each investigation is independent and can happen in parallel.
 
-**Core principle:** Dispatch one agent per independent problem domain. Let them work concurrently.
+**Core principle:** Dispatch small, focused tasks: one narrowly scoped task per subagent. Run as many independent subagents as safely possible, concurrently, instead of bundling unrelated work into one broad prompt.
 
 ## When to Use
 
@@ -34,6 +34,7 @@ digraph when_to_use {
 ```
 
 **Use when:**
+- 2+ independent tasks exist and can run without shared state
 - 3+ test files failing with different root causes
 - Multiple subsystems broken independently
 - Each problem can be understood without context from others
@@ -55,13 +56,15 @@ Group failures by what's broken:
 
 Each domain is independent - fixing tool approval doesn't affect abort tests.
 
-### 2. Create Focused Agent Tasks
+### 2. Create Small, Focused Agent Tasks
 
-Each agent gets:
-- **Specific scope:** One test file or subsystem
-- **Clear goal:** Make these tests pass
-- **Constraints:** Don't change other code
+Each agent gets one narrowly scoped task per subagent:
+- **Specific scope:** One test file, one skill, one component, or one subsystem slice
+- **Clear goal:** Make these tests pass, review this file, draft this section, or inspect this one concern
+- **Constraints:** Don't change unrelated code; do not expand scope
 - **Expected output:** Summary of what you found and fixed
+
+If a task says "fix all", "implement everything", "review the whole project", or touches unrelated files, split it because it is too broad. Prefer 5 small subagents over 1 overloaded subagent when work is independent.
 
 ### 3. Dispatch in Parallel
 
@@ -115,6 +118,9 @@ Return: Summary of what you found and what you fixed.
 
 **❌ Too broad:** "Fix all the tests" - agent gets lost
 **✅ Specific:** "Fix agent-tool-abort.test.ts" - focused scope
+
+**❌ Bundled:** "Update docs, tests, UI, and release notes" - unrelated scopes
+**✅ Split:** One subagent for docs, one for tests, one for UI, one for release notes
 
 **❌ No context:** "Fix the race condition" - agent doesn't know where
 **✅ Context:** Paste the error messages and test names
