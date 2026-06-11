@@ -88,6 +88,13 @@ test("skills use todo tool instead of TodoWrite or plan_tracker operational inst
   }
 });
 
+test("using-superpowers requires upfront todos, not retroactive completion", () => {
+  const text = readSkill("using-superpowers/SKILL.md");
+  assert.match(text, /create all known todo items before starting work/i);
+  assert.match(text, /Never create a todo only to immediately mark it completed/i);
+  assert.match(text, /Exactly one todo should be in_progress/i);
+});
+
 test("TDD skill preserves strictness for non-simple work and exposes complexity decision", () => {
   const text = readSkill("test-driven-development/SKILL.md");
   assert.match(text, /NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST/);

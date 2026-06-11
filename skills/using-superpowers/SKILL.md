@@ -45,6 +45,14 @@ Skills use Claude Code tool names. Non-CC platforms: see `references/copilot-too
 
 **Invoke relevant or requested skills BEFORE any response or action.** Even a 1% chance a skill might apply means that you should invoke the skill to check. If an invoked skill turns out to be wrong for the situation, you don't need to use it.
 
+## Todo Discipline
+
+For multi-step work, create all known todo items before starting work. Then mark exactly one todo as `in_progress` before acting on it, and mark it `completed` immediately after it is verified.
+
+Never create a todo only to immediately mark it completed. That is fake tracking. If work is already done, summarize it instead of backfilling a completed todo.
+
+Exactly one todo should be in_progress at a time.
+
 ```dot
 digraph skill_flow {
     "User message received" [shape=doublecircle];
@@ -54,8 +62,9 @@ digraph skill_flow {
     "Might any skill apply?" [shape=diamond];
     "Invoke Skill tool" [shape=box];
     "Announce: 'Using [skill] to [purpose]'" [shape=box];
-    "Has checklist?" [shape=diamond];
-    "Create todo todo per item" [shape=box];
+    "Has checklist or multi-step work?" [shape=diamond];
+    "Create upfront todos" [shape=box];
+    "Mark one todo in_progress" [shape=box];
     "Follow skill exactly" [shape=box];
     "Respond (including clarifications)" [shape=doublecircle];
 
@@ -68,10 +77,11 @@ digraph skill_flow {
     "Might any skill apply?" -> "Invoke Skill tool" [label="yes, even 1%"];
     "Might any skill apply?" -> "Respond (including clarifications)" [label="definitely not"];
     "Invoke Skill tool" -> "Announce: 'Using [skill] to [purpose]'";
-    "Announce: 'Using [skill] to [purpose]'" -> "Has checklist?";
-    "Has checklist?" -> "Create todo todo per item" [label="yes"];
-    "Has checklist?" -> "Follow skill exactly" [label="no"];
-    "Create todo todo per item" -> "Follow skill exactly";
+    "Announce: 'Using [skill] to [purpose]'" -> "Has checklist or multi-step work?";
+    "Has checklist or multi-step work?" -> "Create upfront todos" [label="yes"];
+    "Has checklist or multi-step work?" -> "Follow skill exactly" [label="no"];
+    "Create upfront todos" -> "Mark one todo in_progress";
+    "Mark one todo in_progress" -> "Follow skill exactly";
 }
 ```
 
