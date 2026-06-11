@@ -132,10 +132,25 @@ test("skills expose merged workflow monitor artifact and handoff contracts", () 
 test("frontend-design skill prevents generic AI-looking frontend work", () => {
   const text = readSkill("frontend-design/SKILL.md");
   assert.match(text, /distinctive, production-grade frontend/i);
-  assert.match(text, /BOLD aesthetic direction/i);
-  assert.match(text, /NEVER use generic AI-generated aesthetics/i);
-  assert.match(text, /Typography/i);
-  assert.match(text, /Motion/i);
+  assert.match(text, /Design Read/i);
+  assert.match(text, /variance.*motion.*density/is);
+  assert.match(text, /official design system/i);
+  assert.match(text, /redesign.*audit/is);
+  assert.match(text, /hero.*2.*lines/is);
+  assert.match(text, /CTA.*one line/is);
+  assert.match(text, /maximum 1 eyebrow per 3 sections/i);
+  assert.match(text, /WCAG.*4\.5:1/i);
+  assert.match(text, /prefers-reduced-motion/i);
+  assert.match(text, /transform.*opacity/i);
+  assert.match(text, /Avoid/i);
+  assert.match(text, /Inter|Roboto|Arial/);
+  assert.match(text, /purple.*gradient/i);
+  assert.match(text, /Lucide/i);
+  assert.match(text, /h-screen/i);
+  assert.match(text, /placeholder-as-label/i);
+  assert.match(text, /React.*Next\.js/is);
+  assert.match(text, /React Native|Expo/);
+  assert.match(text, /44x44px|44×44px/);
 });
 
 test("execution skills expose todo and pi-subagents workflow monitor contracts", () => {
