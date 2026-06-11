@@ -30,10 +30,9 @@ export const SKILL_TO_PHASE: Record<string, WorkflowPhase> = {
 
 const SKILL_PATTERN = /(?:\/skill:|\bskill:|\bsuperpowers:)([a-z0-9-]+)/i;
 const XML_SKILL_PATTERN = /<skill\s+name="([^"]+)"/i;
-const CURRENT_DESIGN_RE = /^docs\/specs\/.*-design\.md$/;
-const PLUS_LEGACY_DESIGN_RE = /^docs\/plans\/.*-design\.md$/;
-const OBRA_DESIGN_RE = /^docs\/superpowers\/specs\/.*-design\.md$/;
-const CURRENT_PLAN_RE = /^docs\/plans\/[^/]+\.md$/;
+const CURRENT_PLAN_RE = /^docs\/[^/]+-plan\.md$/;
+const LEGACY_DESIGN_RE = /^docs\/specs\/.*-design\.md$/;
+const LEGACY_PLAN_RE = /^docs\/plans\/[^/]+\.md$/;
 const OBRA_PLAN_RE = /^docs\/superpowers\/plans\/[^/]+\.md$/;
 
 function emptyState(): WorkflowTrackerState {
@@ -68,7 +67,8 @@ export function phaseForSkill(text: string): WorkflowPhase | null {
 }
 
 export function computeBoundaryToPrompt(state: WorkflowTrackerState): TransitionBoundary | null {
-  if (state.phases.brainstorm === "complete" && !state.prompted.brainstorm) return "design_committed";
+  const hasMergedPlan = state.artifacts.plan !== null;
+  if (state.phases.brainstorm === "complete" && !state.prompted.brainstorm && !hasMergedPlan) return "design_committed";
   if (state.phases.plan === "complete" && !state.prompted.plan) return "plan_ready";
   if (state.phases.execute === "complete" && !state.prompted.execute) return "execution_complete";
   if (state.phases.verify === "complete" && !state.prompted.verify) return "verification_passed";
@@ -172,13 +172,13 @@ export class WorkflowTracker {
 
   onFileWritten(path: string): boolean {
     const normalized = normalizePath(path);
-    if (CURRENT_DESIGN_RE.test(normalized) || PLUS_LEGACY_DESIGN_RE.test(normalized) || OBRA_DESIGN_RE.test(normalized)) {
-      const advanced = this.advanceTo("brainstorm");
-      return this.recordArtifact("brainstorm", normalized) || advanced;
-    }
-    if ((CURRENT_PLAN_RE.test(normalized) && !normalized.endsWith("-design.md")) || OBRA_PLAN_RE.test(normalized)) {
+    if (CURRENT_PLAN_RE.test(normalized) || LEGACY_PLAN_RE.test(normalized) || OBRA_PLAN_RE.test(normalized)) {
       const advanced = this.advanceTo("plan");
       return this.recordArtifact("plan", normalized) || advanced;
+    }
+    if (LEGACY_DESIGN_RE.test(normalized)) {
+      const advanced = this.advanceTo("brainstorm");
+      return this.recordArtifact("brainstorm", normalized) || advanced;
     }
     return false;
   }

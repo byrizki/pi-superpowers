@@ -88,20 +88,28 @@ test("skills use todo tool instead of TodoWrite or plan_tracker operational inst
   }
 });
 
-test("canonical strict TDD language is preserved", () => {
+test("TDD skill preserves strictness for non-simple work and exposes complexity decision", () => {
   const text = readSkill("test-driven-development/SKILL.md");
   assert.match(text, /NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST/);
+  assert.match(text, /Complexity Decision/i);
+  assert.match(text, /Simple task: skipping TDD/);
+  assert.match(text, /Medium|Complex/);
   assert.doesNotMatch(text, /Three Scenarios/i);
 });
 
-test("skills expose workflow monitor artifact and handoff contracts", () => {
+test("skills expose merged workflow monitor artifact and handoff contracts", () => {
   const brainstorming = readSkill("brainstorming/SKILL.md");
-  assert.match(brainstorming, /docs\/specs\/YYYY-MM-DD-<topic>-design\.md/);
-  assert.match(brainstorming, /\/workflow-next plan <spec-path>/);
-  assert.doesNotMatch(brainstorming, /docs\/plans\/.*-design\.md/);
+  assert.match(brainstorming, /docs\/YYYY-MM-DD-<topic>-plan\.md/);
+  assert.match(brainstorming, /complexity/i);
+  assert.match(brainstorming, /Simple task: skipping/);
+  assert.match(brainstorming, /Do not commit/i);
+  assert.doesNotMatch(brainstorming, /Visual Companion/i);
+  assert.doesNotMatch(brainstorming, /docs\/specs\/YYYY-MM-DD-<topic>-design\.md/);
 
   const writingPlans = readSkill("writing-plans/SKILL.md");
-  assert.match(writingPlans, /docs\/plans\/YYYY-MM-DD-<feature-name>\.md/);
+  assert.match(writingPlans, /docs\/YYYY-MM-DD-<feature-name>-plan\.md/);
+  assert.match(writingPlans, /Design Summary/);
+  assert.match(writingPlans, /Do not commit/i);
   assert.match(writingPlans, /\/workflow-next execute <plan-path>/);
   assert.match(writingPlans, /\/skill:subagent-driven-development/);
   assert.match(writingPlans, /\/skill:executing-plans/);

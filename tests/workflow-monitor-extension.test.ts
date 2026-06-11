@@ -97,8 +97,8 @@ test("extension renders the pi-superpowers-plus phase strip contract", async () 
     ].join("<dim> → </dim>"),
   );
 
-  await harness.emit("tool_result", { toolName: "write", input: { path: "docs/specs/example-design.md" }, isError: false });
-  assert.equal(harness.appended.at(-1).data.workflow.artifacts.brainstorm, "docs/specs/example-design.md");
+  await harness.emit("tool_result", { toolName: "write", input: { path: "docs/example-plan.md" }, isError: false });
+  assert.equal(harness.appended.at(-1).data.workflow.artifacts.plan, "docs/example-plan.md");
 });
 
 test("extension observes todo and pi-subagents tools", async () => {
@@ -173,7 +173,7 @@ test("extension blocks thinking-phase source writes and stale completion command
   await harness.emit("input", { text: "/skill:brainstorming" });
   const blockedWrite = await harness.emit("tool_call", { toolName: "write", input: { path: "src/index.ts" } });
   assert.equal(blockedWrite.block, true);
-  assert.match(blockedWrite.reason, /docs\/specs\/ and docs\/plans\//);
+  assert.match(blockedWrite.reason, /docs\/.*-plan\.md/);
 
   await harness.emit("input", { text: "/skill:executing-plans" });
   assert.equal(await harness.emit("tool_call", { toolName: "bash", input: { command: "git commit -m test" } }), undefined);
@@ -192,9 +192,9 @@ test("workflow commands reset state and prefill fresh sessions", async () => {
   await harness.commands.get("workflow-reset").handler("", harness.ctx);
   assert.equal(harness.appended.at(-1).data.workflow.currentPhase, null);
 
-  await harness.commands.get("workflow-next").handler("execute docs/plans/example.md", harness.ctx);
+  await harness.commands.get("workflow-next").handler("execute docs/example-plan.md", harness.ctx);
   assert.equal(harness.newSessionOptions.parentSession, "/tmp/session.json");
-  assert.match(harness.editorText, /Continue from artifact: docs\/plans\/example\.md/);
+  assert.match(harness.editorText, /Continue from artifact: docs\/example-plan\.md/);
   assert.match(harness.editorText, /executing-plans|subagent-driven-development/);
 });
 

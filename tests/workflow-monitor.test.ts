@@ -24,7 +24,8 @@ import {
   WORKFLOW_PHASES,
 } from "../extensions/workflow-monitor/workflow-tracker.ts";
 
-test("thinking phases allow canonical Superpowers spec and plan paths", () => {
+test("thinking phases allow the merged docs plan path and legacy paths", () => {
+  assert.equal(isAllowedThinkingPhaseWrite("docs/2026-04-26-widget-plan.md", process.cwd()), true);
   assert.equal(isAllowedThinkingPhaseWrite("docs/specs/2026-04-26-design.md", process.cwd()), true);
   assert.equal(isAllowedThinkingPhaseWrite("docs/plans/2026-04-26-plan.md", process.cwd()), true);
 });
@@ -40,8 +41,9 @@ test("file heuristics classify source tests specs plans and docs", () => {
   assert.equal(isSourceFile("src/foo.ts"), true);
   assert.equal(isSourceFile("src/foo.test.ts"), false);
   assert.equal(isSourceFile("README.md"), false);
-  assert.equal(classifyPath("docs/specs/2026-04-26-widget-design.md"), "spec");
-  assert.equal(classifyPath("docs/plans/2026-04-26-widget.md"), "plan");
+  assert.equal(classifyPath("docs/2026-04-26-widget-plan.md"), "plan");
+  assert.equal(classifyPath("docs/specs/2026-04-26-widget-design.md"), "legacy-spec");
+  assert.equal(classifyPath("docs/plans/2026-04-26-widget.md"), "legacy-plan");
   assert.equal(classifyPath("docs/plans/2026-04-26-widget-design.md"), "legacy-spec");
   assert.equal(classifyPath("README.md"), "doc");
   assert.equal(findCorrespondingTestFile("src/foo.ts"), "tests/foo.test.ts");
@@ -82,7 +84,7 @@ test("test result parser uses exit code first and output fallbacks", () => {
 });
 
 test("warning messages expose specific workflow guardrails", () => {
-  assert.match(processWriteWarning("src/index.ts"), /docs\/specs\/ and docs\/plans\//);
+  assert.match(processWriteWarning("src/index.ts"), /docs\/.*-plan\.md/);
   assert.match(tddWarning("Write or update a failing test before changing source code."), /failing test/);
   assert.match(getTddViolationWarning("Write or update a failing test before changing source code."), /failing test/);
   assert.match(debugWarning("Investigate the root cause before changing source code."), /root cause/);
@@ -109,10 +111,10 @@ test("workflow handler flags source writes during brainstorm", () => {
   assert.equal(result.violation?.type, "process-write-during-thinking");
 });
 
-test("workflow handler allows canonical spec writes during brainstorm", () => {
+test("workflow handler allows merged docs plan writes during brainstorm", () => {
   const handler = createWorkflowHandler();
   handler.handleInputText("/skill:brainstorming");
-  const result = handler.handleToolCall("write", { path: "docs/specs/example-design.md" });
+  const result = handler.handleToolCall("write", { path: "docs/example-plan.md" });
   assert.equal(result.violation, undefined);
 });
 
@@ -128,8 +130,9 @@ test("workflow handler integrates tracker artifacts todo subagents and monitors"
   const handler = createWorkflowHandler();
 
   handler.handleInputText("/skill:brainstorming");
-  handler.handleFileWritten("docs/specs/2026-04-26-widget-design.md");
-  assert.equal(handler.getFullState().workflow.artifacts.brainstorm, "docs/specs/2026-04-26-widget-design.md");
+  handler.handleFileWritten("docs/2026-04-26-widget-plan.md");
+  assert.equal(handler.getFullState().workflow.currentPhase, "plan");
+  assert.equal(handler.getFullState().workflow.artifacts.plan, "docs/2026-04-26-widget-plan.md");
 
   handler.handleFileWritten("tests/widget.test.ts");
   handler.handleTestCommand("npm test", "1 failing", 1);

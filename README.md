@@ -59,14 +59,15 @@ The bundled workflow monitor tracks the Superpowers phase strip in the Pi UI:
 
 It records canonical artifacts and tool signals:
 
-- Brainstorm artifacts: `docs/specs/YYYY-MM-DD-<topic>-design.md`.
-- Plan artifacts: `docs/plans/YYYY-MM-DD-<feature>.md`.
+- Merged design + implementation plan artifacts: `docs/YYYY-MM-DD-<topic>-plan.md`.
+- Legacy `docs/specs/` and `docs/plans/` artifacts are still recognized for compatibility.
 - `todo` create/update signals execution progress.
 - `subagent` calls to `worker`, `superpowers-spec-reviewer`, and `superpowers-code-reviewer` signal delegated execution and review.
+- Do not auto-commit generated markdown; commit it only when the user explicitly asks.
 
 The monitor also provides runtime guardrails:
 
-- Brainstorm/plan writes are limited to `docs/specs/` and `docs/plans/`.
+- Brainstorm/plan writes are limited to `docs/YYYY-MM-DD-<topic>-plan.md` (legacy `docs/specs/` and `docs/plans/` remain allowed for compatibility).
 - TDD state warns on source edits before a failing test.
 - Debug state warns on fixes before investigation or repeated failing fixes.
 - Verification state becomes stale after source edits and gates completion actions such as `git commit`, `git push`, and `gh pr create` until fresh verification passes.

@@ -247,7 +247,7 @@ export function createWorkflowHandler(initial?: Partial<WorkflowMonitorState>) {
             violation: {
               type: "process-write-during-thinking",
               path,
-              message: "Brainstorm/Plan writes are limited to docs/specs/ and docs/plans/.",
+              message: "Brainstorm/Plan writes are limited to docs/YYYY-MM-DD-topic-plan.md (legacy docs/specs/ and docs/plans/ still recognized)."
             },
           };
         }

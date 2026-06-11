@@ -161,7 +161,7 @@ todo({ action: "update", id: 1, status: "completed" })
 ```
 You: I'm using Subagent-Driven Development to execute this plan.
 
-[Read plan file once: docs/plans/feature-plan.md]
+[Read plan file once: docs/feature-plan.md]
 [Extract all 5 tasks with full text and context]
 [Create todo with all tasks]
 

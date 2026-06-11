@@ -30,8 +30,8 @@ test("README acknowledges pi-superpowers-plus workflow monitor prior art", () =>
 test("README documents workflow monitor runtime commands and boundaries", () => {
   assert.match(readme, /\/workflow-next/);
   assert.match(readme, /\/workflow-reset/);
-  assert.match(readme, /docs\/specs\/.*-design\.md/);
-  assert.match(readme, /docs\/plans\//);
+  assert.match(readme, /docs\/YYYY-MM-DD-<topic>-plan\.md/);
+  assert.match(readme, /Do not auto-commit/i);
   assert.match(readme, /todo.*execution/i);
   assert.match(readme, /subagent.*review/i);
   assert.match(readme, /git commit/);

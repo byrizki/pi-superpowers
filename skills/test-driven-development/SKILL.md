@@ -13,20 +13,29 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
+## Complexity Decision
+
+Classify before implementation. User instructions override this rubric.
+
+- **Simple**: single-file text/config/doc tweak, low risk, reversible, no behavior change, or tests would add no useful signal. You may skip TDD. Say: `Simple task: skipping TDD because <reason>.`
+- **Medium**: behavior change, bug fix with clear symptom, refactor, or multi-file edit. Use TDD for changed behavior.
+- **Complex**: new feature, risky refactor, bug hunt, data/security impact, or unclear behavior. Use full TDD.
+
 ## When to Use
 
-**Always:**
+Use TDD for medium/complex:
 - New features
 - Bug fixes
 - Refactoring
 - Behavior changes
 
-**Exceptions (ask your human partner):**
+**Exceptions:**
+- Simple tasks per rubric above
 - Throwaway prototypes
 - Generated code
-- Configuration files
+- Configuration files where no meaningful behavior test exists
 
-Thinking "skip TDD just this once"? Stop. That's rationalization.
+Thinking "skip TDD just this once" on medium/complex work? Stop. That's rationalization.
 
 ## The Iron Law
 
@@ -36,7 +45,7 @@ NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
 
 Write code before the test? Delete it. Start over.
 
-**No exceptions:**
+**No exceptions for medium/complex work:**
 - Don't keep it as "reference"
 - Don't "adapt" it while writing tests
 - Don't look at it

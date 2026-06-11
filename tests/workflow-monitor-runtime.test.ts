@@ -43,32 +43,24 @@ test("parseSkillName recognises slash, superpowers, skill, and XML skill forms",
   assert.equal(parseSkillName('<skill name="brainstorming" location="/x">'), "brainstorming");
 });
 
-test("tracker detects design artifacts under docs/specs", () => {
-  const tracker = new WorkflowTracker();
-  assert.equal(tracker.onFileWritten("docs/specs/2026-04-26-widget-design.md"), true);
-  const state = tracker.getState();
-  assert.equal(state.currentPhase, "brainstorm");
-  assert.equal(state.artifacts.brainstorm, "docs/specs/2026-04-26-widget-design.md");
-});
-
-test("tracker detects implementation plan artifacts under docs/plans", () => {
+test("tracker detects merged design and implementation plan artifacts under docs", () => {
   const tracker = new WorkflowTracker();
   tracker.advanceTo("brainstorm");
-  assert.equal(tracker.onFileWritten("docs/plans/2026-04-26-workflow-monitor-integration.md"), true);
+  assert.equal(tracker.onFileWritten("docs/2026-04-26-workflow-monitor-integration-plan.md"), true);
   const state = tracker.getState();
   assert.equal(state.currentPhase, "plan");
-  assert.equal(state.artifacts.plan, "docs/plans/2026-04-26-workflow-monitor-integration.md");
+  assert.equal(state.artifacts.plan, "docs/2026-04-26-workflow-monitor-integration-plan.md");
   assert.equal(state.phases.brainstorm, "complete");
 });
 
-test("tracker supports plus compatibility artifact paths without changing canonical paths", () => {
+test("tracker supports legacy artifact paths without changing canonical path", () => {
   const tracker = new WorkflowTracker();
-  assert.equal(tracker.onFileWritten("docs/plans/2026-02-10-legacy-design.md"), true);
-  assert.equal(tracker.getState().artifacts.brainstorm, "docs/plans/2026-02-10-legacy-design.md");
+  assert.equal(tracker.onFileWritten("docs/specs/2026-02-10-legacy-design.md"), true);
+  assert.equal(tracker.getState().artifacts.brainstorm, "docs/specs/2026-02-10-legacy-design.md");
 
   const second = new WorkflowTracker();
-  assert.equal(second.onFileWritten("docs/superpowers/specs/2026-02-10-x-design.md"), true);
-  assert.equal(second.getState().currentPhase, "brainstorm");
+  assert.equal(second.onFileWritten("docs/plans/2026-02-10-legacy.md"), true);
+  assert.equal(second.getState().currentPhase, "plan");
 
   const third = new WorkflowTracker();
   assert.equal(third.onFileWritten("docs/superpowers/plans/2026-02-10-x.md"), true);
@@ -127,6 +119,11 @@ test("tracker computes boundaries and resets on backward navigation", () => {
   tracker.markPrompted("brainstorm");
   assert.equal(computeBoundaryToPrompt(tracker.getState()), null);
 
+  const mergedPlan = new WorkflowTracker();
+  mergedPlan.advanceTo("brainstorm");
+  mergedPlan.onFileWritten("docs/merged-plan.md");
+  assert.equal(computeBoundaryToPrompt(mergedPlan.getState()), null);
+
   tracker.advanceTo("plan");
   tracker.recordArtifact("plan", "docs/plans/old.md");
   tracker.advanceTo("brainstorm");
@@ -139,15 +136,15 @@ test("tracker computes boundaries and resets on backward navigation", () => {
 test("tracker preserves new artifacts when file writes move backward", () => {
   const tracker = new WorkflowTracker();
   tracker.advanceTo("execute");
-  tracker.recordArtifact("plan", "docs/plans/old.md");
-  assert.equal(tracker.onFileWritten("docs/specs/new-design.md"), true);
-  assert.equal(tracker.getState().currentPhase, "brainstorm");
-  assert.equal(tracker.getState().artifacts.brainstorm, "docs/specs/new-design.md");
+  tracker.recordArtifact("plan", "docs/old-plan.md");
+  assert.equal(tracker.onFileWritten("docs/new-plan.md"), true);
+  assert.equal(tracker.getState().currentPhase, "plan");
+  assert.equal(tracker.getState().artifacts.plan, "docs/new-plan.md");
 
   tracker.advanceTo("review");
-  assert.equal(tracker.onFileWritten("docs/plans/new-plan.md"), true);
+  assert.equal(tracker.onFileWritten("docs/another-plan.md"), true);
   assert.equal(tracker.getState().currentPhase, "plan");
-  assert.equal(tracker.getState().artifacts.plan, "docs/plans/new-plan.md");
+  assert.equal(tracker.getState().artifacts.plan, "docs/another-plan.md");
 });
 
 test("skip confirmation treats the current phase as resolved", () => {

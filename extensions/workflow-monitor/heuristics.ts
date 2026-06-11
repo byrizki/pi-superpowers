@@ -31,11 +31,11 @@ function normalize(filePath: string, cwd = process.cwd()): string {
   return path.relative(cwd, absolute).split(path.sep).join("/");
 }
 
-export type PathClassification = "spec" | "legacy-spec" | "plan" | "test" | "source" | "doc" | "other";
+export type PathClassification = "plan" | "legacy-spec" | "legacy-plan" | "test" | "source" | "doc" | "other";
 
 export function isAllowedThinkingPhaseWrite(filePath: string, cwd = process.cwd()): boolean {
   const relative = normalize(filePath, cwd);
-  return relative.startsWith("docs/specs/") || relative.startsWith("docs/plans/");
+  return /^docs\/[^/]+-plan\.md$/.test(relative) || relative.startsWith("docs/specs/") || relative.startsWith("docs/plans/");
 }
 
 export function isTestFile(filePath: string): boolean {
@@ -61,9 +61,10 @@ export function isSourceFile(filePath: string): boolean {
 
 export function classifyPath(filePath: string): PathClassification {
   const normalized = filePath.split(path.sep).join("/").replace(/^\.\//, "");
-  if (/^docs\/specs\/.*-design\.md$/.test(normalized)) return "spec";
+  if (/^docs\/[^/]+-plan\.md$/.test(normalized)) return "plan";
+  if (/^docs\/specs\/.*-design\.md$/.test(normalized)) return "legacy-spec";
   if (/^docs\/plans\/.*-design\.md$/.test(normalized)) return "legacy-spec";
-  if (/^docs\/plans\/[^/]+\.md$/.test(normalized)) return "plan";
+  if (/^docs\/plans\/[^/]+\.md$/.test(normalized)) return "legacy-plan";
   if (isTestFile(normalized)) return "test";
   if (isSourceFile(normalized)) return "source";
   if (/\.(?:md|mdx|txt|rst)$/.test(normalized)) return "doc";

@@ -3,7 +3,7 @@ import type { WorkflowViolation } from "./workflow-handler.ts";
 export function processWriteWarning(path?: string): string {
   return [
     "Superpowers workflow guardrail: Brainstorm/Plan phases may only write canonical artifacts.",
-    "Allowed paths: docs/specs/ and docs/plans/.",
+    "Allowed paths: docs/YYYY-MM-DD-topic-plan.md (legacy docs/specs/ and docs/plans/ still recognized).",
     path ? `Attempted path: ${path}` : undefined,
   ].filter(Boolean).join("\n");
 }
